@@ -1,10 +1,5 @@
 declare module '@deepseek-ai/dsh-agent' {
-  export interface ModelSelectionRef {
-    current: { provider: string; model: string } | undefined
-    assembled: { provider: string; model: string } | undefined
-  }
-
-  export function installModelSelection(context: unknown, selection: ModelSelectionRef): () => void
+  export function installModelSelection(context: unknown): () => void
 }
 
 declare module '@deepseek-ai/dsh-llm' {

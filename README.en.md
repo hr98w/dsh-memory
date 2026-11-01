@@ -108,7 +108,7 @@ dsh plugin --profile web add @hr98w/dsh-memory
 
 Restart `dsh web` completely after installation.
 
-The plugin adapts to the newer DSH Web RPC and Session persistence APIs. Restart Web after updating the plugin; refreshing the page alone is not enough.
+The plugin targets the DSH 0.2.x Web Connection, RPC, and Session persistence APIs. After updating from 0.1.4 or earlier, fully restart Web; refreshing the page alone is not enough.
 
 ### Install from source
 
@@ -150,7 +150,7 @@ $DSH_HOME/memory/
     └── <memory-name>.md                 # authoritative detailed memory
 ```
 
-- Web management APIs are available only to the local machine;
+- Web management is enabled only when the page is served from the local machine; the `/memory` channel uses the DSH Connection Host/Origin and browser-auth fence (loopback by default);
 - Web memory-write requests never submit a memory root, absolute path, cwd, or internal Workspace key; the header shows the Host-reported local memory root for diagnostics only;
 - Debug is off by default and does not record conversation evidence, memory/model proposal bodies, or API keys;
 - `MEMORY.md` is a rebuildable index; detailed Markdown files are authoritative Workspace data.

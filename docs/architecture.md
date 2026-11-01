@@ -7,7 +7,7 @@
 ```text
 Agent step                         Web Browser
     │                                   │
-    │ Prompt context / memory_update    │ loopback RPC /memory
+    │ Prompt context / memory_update    │ Connection RPC /memory
     ▼                                   ▼
 ┌──────────────────────────────────────────────────┐
 │ Host Cordis plugin: @hr98w/dsh-memory            │
@@ -29,7 +29,7 @@ Agent step                         Web Browser
 
 | 文件 | 职责 |
 |---|---|
-| `src/index.ts` | Host Cordis entry；组合 Service、Prompt、Tool 和 loopback RPC Consumer |
+| `src/index.ts` | Host Cordis entry；组合 Service、Prompt、Tool 和 Connection RPC Consumer |
 | `src/memory-store.ts` | Markdown Provider；格式校验、revision、CAS、scope lock、原子发布和索引重建 |
 | `src/memory-observation.ts` | 将每次动态 context 的 Host-only revision 绑定到 live Agent，并为模型写入提供 CAS 前置条件 |
 | `src/protocol.ts` | Host/Browser 共用的 wire 类型和双侧运行时解析 |
@@ -111,12 +111,12 @@ memory_update(change without revision)
 
 ## Browser 请求流程
 
-Bundle 对标准 `connection` row（同时匹配 id 与包名）设置 `inject: [webRuntime, webServer]`，保留其 Web 配置依赖，并修复 DSH Electron 合并后通用 RPC 注册缺少 `webServer` 依赖的问题。模块声明的 `credentials` 仍由 Loader 合并；不改认证或请求处理逻辑。Headless 没有该 row 时补丁警告并跳过，不创建 Connection。自定义 Connection row 的额外依赖需由后加载的用户 patch 保留，因为 Bundle patch 的 `inject` 字段是替换而非追加。背景与移除条件见 [兼容性决策](decisions/implemented/bug-fix/2026-09-10-connection-webserver-injection.md)。
+Bundle 对标准 `connection` row（同时匹配 id 与包名）设置 `inject: [webStartup, webServer]`：当前 DSH 的该 row 从 `webStartup` 求值 `trustedHosts` 配置，而通用 RPC 注册仍从 provider context 读取 `webServer`；两者缺一都会让 Connection 或 memory RPC 子 fiber 失败。模块声明的 `credentials` 仍由 Loader 合并；不改认证或请求处理逻辑。当前 DSH 的 `connection.rpc.handle()` 没有 per-channel authority 参数，memory 通道沿用 Connection 的标准 Host/Origin 与 browser-auth 准入，Browser 仍在 `isLoopback` 为 false 时禁用 Memory 操作。Headless 没有该 row 时补丁警告并跳过，不创建 Connection。自定义 Connection row 的额外依赖需由后加载的用户 patch 保留，因为 Bundle patch 的 `inject` 字段是替换而非追加。背景与移除条件见 [兼容性决策](decisions/implemented/bug-fix/2026-09-10-connection-webserver-injection.md)。
 
 ```text
 Memory Settings
   -> ctx.connection.rpc.call('/memory', endpoint, payload)
-  -> Connection enforces loopback authority
+  -> Connection applies the Host/Origin and browser-auth fence
   -> Host dsh-memory handler validates payload
   -> MemoryStore
   -> Host validates/constructs response

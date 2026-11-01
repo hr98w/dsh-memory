@@ -8,7 +8,7 @@ Detailed JSONL diagnostics were written for every consolidation attempt. They ar
 
 Rename the Browser tab to Settings and persist a `debug` boolean beside the consolidation model route in plugin-owned `settings.yml`. Debug logging is disabled by default and applies to new attempts. When disabled, the debug Consumer performs no directory or file write; receipts and replayable worker Sessions remain unchanged.
 
-Keep format-1 settings readable and interpret their missing debug field as disabled. New commits write format 2 and remain revision checked. The existing loopback settings mutation validates the boolean at runtime and can change Debug without requiring the DSH model catalog when the model route itself is unchanged.
+Keep format-1 settings readable and interpret their missing debug field as disabled. New commits write format 2 and remain revision checked. The existing Connection settings mutation validates the boolean at runtime and can change Debug without requiring the DSH model catalog when the model route itself is unchanged.
 
 Only show a debug path for an attempt whose response says logging was enabled. Do not keep debug paths on every historical Session card.
 

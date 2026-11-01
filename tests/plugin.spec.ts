@@ -51,9 +51,9 @@ describe('Host Cordis composition', () => {
     })
     ctx.provide('connection', {
       rpc: {
-        handle(channel: string, handler: typeof rpcHandler, options: unknown) {
+        handle(channel: string, handler: typeof rpcHandler) {
           rpcHandler = handler
-          channels.push({ channel, handler, options })
+          channels.push({ channel, handler })
           return async () => undefined
         },
       },
@@ -127,7 +127,7 @@ describe('Host Cordis composition', () => {
     }])
     expect(contexts).toHaveLength(1)
     expect(tools).toMatchObject([{ name: 'memory_update' }])
-    expect(channels).toMatchObject([{ channel: '/memory', options: { authority: 'loopback' } }])
+    expect(channels).toMatchObject([{ channel: '/memory' }])
 
     const memory = ctx.get('memoryStore') as MarkdownMemoryStore
     const scope = memory.scopeForCwd('/work/plugin-rpc')

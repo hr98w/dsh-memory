@@ -10,7 +10,7 @@ Add a fourth Memory Settings tab named Model. The Host projects active providers
 
 Persist only the selected provider and model in `$DSH_HOME/memory/settings.yml`. The settings file has a closed schema, revision-derived CAS, and atomic replacement. A successful selection updates the live consolidation worker for subsequent attempts; an attempt snapshots its route before starting.
 
-Expose the catalog and mutation through loopback-only, runtime-validated `models/read` and `models/select` RPC endpoints. The Host rechecks that a selected route is active before committing it.
+Expose the catalog and mutation through runtime-validated `models/read` and `models/select` Connection RPC endpoints; the Settings surface disables them when the page is not loopback. The Host rechecks that a selected route is active before committing it.
 
 ## Alternatives considered
 

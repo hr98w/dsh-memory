@@ -31,10 +31,13 @@ const warn = (...args) => warnings.push(args)
 const webEntries = applyEntryPatches([], yaml.load(readFileSync(resolve('packages/bundle/web-app/cordis.patch.yml'), 'utf8'), { schema: entryListSchema }), () => {})
 const original = webEntries.find(entry => entry.id === 'connection')
 assert(original, 'Standard Web Connection row must exist')
+assert(original.inject.includes('webStartup'), 'Standard Web Connection row must keep its webStartup config dependency')
 const patched = applyEntryPatches([original], patches, warn)
 assert.equal(warnings.length, 0)
 assert.deepEqual(patched[0].config, original.config, 'Preserve authentication and runtime config')
-assert.deepEqual(patched[0].inject, ['webRuntime', 'webServer'])
+// The Bundle row replaces entry-level inject, so this also pins every dependency the DSH baseline declares.
+assert.deepEqual(patched[0].inject, [...original.inject, 'webServer'])
+assert.equal(patched[0].inject.includes('webRuntime'), false)
 
 warnings = []
 const headless = applyEntryPatches([], patches, warn)
@@ -51,21 +54,24 @@ try {
   for (const [label, entry] of [['unpatched', original], ['patched', patched[0]], ['headless', undefined]]) {
     const ctx = new Context()
     const routes = new Map()
+    let inject
     try {
       if (entry) {
         await ctx.plugin({ apply(provider) {
           provider.provide('credentials', {})
-          provider.provide('webRuntime', {})
+          provider.provide('webStartup', { trustedHosts: [] })
           provider.provide('webServer', { register(route) {
             routes.set(route.path, route)
             return () => routes.delete(route.path)
           } })
         } })
-        const inject = Inject.resolve(connectionInject)
+        inject = Inject.resolve(connectionInject)
         Inject.resolve(entry.inject, inject)
         assert('credentials' in inject)
         await ctx.plugin({ inject, apply(provider) {
-          // Authentication is not invoked: this check exercises registration ownership, not HTTP.
+          // The row config is evaluated from webStartup; authentication is not invoked because this
+          // check exercises registration ownership, not HTTP.
+          assert.deepEqual(provider.webStartup.trustedHosts, [])
           new HostConnectionService(provider, [], {})
         } })
       }
@@ -76,9 +82,7 @@ try {
       for (const runtime of ctx.registry.values()) for (const child of runtime.fibers) {
         if (child.state === 3) try { await child.await() } catch (error) { failures.push(error.message) }
       }
-      const expectsRoute = entry !== undefined && (
-        'webServer' in Inject.resolve(connectionInject) || 'webServer' in Inject.resolve(entry.inject)
-      )
+      const expectsRoute = entry !== undefined && 'webServer' in inject
       if (entry && !expectsRoute) {
         assert(failures.some(message => message.includes('webServer')))
         assert.equal(routes.has('/memory'), false)

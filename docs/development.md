@@ -54,7 +54,7 @@ pnpm run build
 node scripts/check-memory-rpc.mjs /absolute/path/to/deepseek-harness
 ```
 
-脚本使用真实补丁算法和 Connection，检查同级服务提供方的 RPC 注册、子 fiber 失败、路由卸载，以及缺少 Connection 的 Headless 组合。它只创建临时记忆目录并在退出时清理，不启动 HTTP 服务或验证浏览器认证。真实页面仍需按下面步骤人工验证。标准 Headless 没有 `connection` row 时会提示跳过该补丁，不影响启动。
+脚本使用真实补丁算法和 Connection，检查当前 web-app `connection` row 的 `webStartup` 配置依赖、`webServer` 注册、未打补丁时的子 fiber 失败、路由卸载，以及缺少 Connection 的 Headless 组合。它只创建临时记忆目录并在退出时清理，不启动 HTTP 服务或验证浏览器认证。真实页面仍需按下面步骤人工验证。标准 Headless 没有 `connection` row 时会提示跳过该补丁，不影响启动。
 
 ```sh
 pnpm run build
@@ -65,11 +65,11 @@ dsh web --no-open
 
 确认：
 
-1. dump config 包含 `id: dsh-memory`；
-2. Web boot 没有 `plugin tree failed to load`；
+1. dump config 包含 `id: dsh-memory`，且 `connection` row 的 `inject` 同时包含 `webStartup` 与 `webServer`；
+2. Web boot 打印访问 URL，且没有 `startup failed`、`plugin tree failed to load` 或 missing-service 列表；
 3. `__DSH_BOOT__` 包含 `@hr98w/dsh-memory` Client；
 4. 启动页插件清单中的 `/plugins/@hr98w/dsh-memory/client.js?rev=...` 返回 Browser bundle，而不是 SPA fallback；
-5. Settings 导航出现 Memory；
+5. Settings 导航出现 Memory，页面显示“已启用”和根目录，而不是 `transport failure ... HTTP 405`；
 6. Global 保存后 revision 变化，旧页面保存得到 conflict；
 7. Headless 不包含 `connection` 时仍能加载 Prompt 和 Tool。
 

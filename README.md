@@ -108,7 +108,7 @@ dsh plugin --profile web add @hr98w/dsh-memory
 
 安装完成后请完全重启 `dsh web`。
 
-插件已适配新版 DSH 的 Web RPC 与 Session persistence 接口；更新插件后也需重启 Web，不能只刷新页面。
+插件适配 DSH 0.2.x 的 Web Connection、RPC 与 Session persistence 接口；从 0.1.4 或更早版本更新后必须完全重启 Web，不能只刷新页面。
 
 ### 从源码安装
 
@@ -150,7 +150,7 @@ $DSH_HOME/memory/
     └── <memory-name>.md                 # 权威详细记忆
 ```
 
-- Web 管理接口只允许本机访问；
+- Web 管理页面只在本机访问时启用；`/memory` 通道沿用 DSH Connection 的 Host/Origin 与 browser-auth 准入（默认只接受 loopback）；
 - Web 的记忆写入请求不会提交记忆根目录、绝对路径、cwd 或内部 Workspace key；页面顶部仅为本机诊断显示 Host 返回的记忆根目录；
 - Debug 默认关闭，不记录对话证据、记忆正文、模型提议正文或 API key；
 - `MEMORY.md` 是可重建索引，详细 Markdown 文件才是 Workspace 权威数据。

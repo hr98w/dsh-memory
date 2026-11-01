@@ -6,7 +6,7 @@ The Browser needs to start one consolidation attempt and show its durable result
 
 ## Decision
 
-Expose `sessions/consolidate` on the existing loopback-only `/memory` channel. The Browser submits exactly one non-empty Session id, and the Host resolves all source and target state through `SessionPersistence`, the live Agent registry, and `MemoryStore`.
+Expose `sessions/consolidate` on the existing `/memory` Connection channel. The Browser submits exactly one non-empty Session id, and the Host resolves all source and target state through `SessionPersistence`, the live Agent registry, and `MemoryStore`.
 
 Assemble the runner only in an optional Cordis child fiber that requires `sessionPersistence`, `agents`, and `sessions`. The first version waits for one attempt and propagates the Connection abort signal instead of introducing a background job system. Its closed response contains only terminal state, recovery flag, review id, attempt number, and change count. Both Host and Browser parse request and response values at runtime.
 
@@ -21,7 +21,7 @@ The Session list exposes only a receipt status summary. It marks whether that re
 
 ## Consequences
 
-- Manual consolidation remains loopback-only and Host-authoritative.
+- Manual consolidation remains Host-authoritative; the Settings surface enables it only on a loopback page, while the channel follows Connection admission.
 - Missing Session services disable only consolidation while other Memory Consumers continue to load.
 - A completed action can refresh the list and distinguish current-review results from receipts for an older Session revision.
 - If real Web testing shows Connection timeouts are unsuitable, a later decision may replace the synchronous response with a Host-owned job protocol.

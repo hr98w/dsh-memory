@@ -262,8 +262,7 @@ export function apply(ctx: Context, config: Config = {}): void {
         payload,
         signal,
       ),
-      { authority: 'loopback' },
-    ), 'dsh-memory: loopback RPC')
+    ), 'dsh-memory: Memory RPC')
   })
 }
 

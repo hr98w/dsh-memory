@@ -1,7 +1,7 @@
 /** Isolated, replayable worker Agent for producing a Session consolidation proposal. */
 
 import type { Context } from '@deepseek-ai/cordis'
-import { installModelSelection, type ModelSelectionRef } from '@deepseek-ai/dsh-agent'
+import { installModelSelection } from '@deepseek-ai/dsh-agent'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
 import { SessionId, type SessionId as DshSessionId } from '@deepseek-ai/dsh-session'
 import { defineTool } from '@deepseek-ai/dsh-tools'
@@ -281,11 +281,7 @@ export class SessionConsolidationWorker {
               }
             }
           }))
-          const selection: ModelSelectionRef = {
-            current: { provider: config.provider, model: config.model },
-            assembled: undefined,
-          }
-          installModelSelection(agentCtx as unknown as Context, selection)
+          installModelSelection(agentCtx as unknown as Context)
           agentCtx.on('agent/error', ({ error }) => {
             agentFailure ??= error
             this.debug?.failure(debugIdentity, 'agent-error', error)

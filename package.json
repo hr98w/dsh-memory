@@ -1,6 +1,6 @@
 {
   "name": "@hr98w/dsh-memory",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Claude Code- and Codex-inspired long-term memory for DeepSeek Harness",
   "repository": {
     "type": "git",
@@ -52,7 +52,6 @@
       "inject": [
         "@deepseek-ai/dsh-client-connection",
         "@deepseek-ai/dsh-client-locale",
-        "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-ui-slots"
       ],

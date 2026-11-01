@@ -176,7 +176,7 @@ Memory 是 DSH Settings 中独立 section，包含：
 
 页面顶部另有只读状态摘要，展示本机 memory root、字节数和 Workspace 数量；错误与最近操作结果在当前页面就地显示。
 
-Browser 与 Host 是两个 Cordis tree。Browser 只能通过 `/memory` loopback Connection RPC 使用受校验的业务值，不能直接访问 Host `ctx`、文件系统、`MemoryStore` 或 `SessionPersistence`。
+Browser 与 Host 是两个 Cordis tree。Browser 只能通过 `/memory` Connection RPC 使用受校验的业务值（页面在非 loopback 访问时禁用 Memory 操作），不能直接访问 Host `ctx`、文件系统、`MemoryStore` 或 `SessionPersistence`。
 
 目标 endpoint：
 

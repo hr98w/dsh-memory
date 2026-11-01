@@ -11,7 +11,7 @@
 - revision/CAS、scope lock 和原子提交；
 - Global 与当前 Workspace index 的动态 Prompt context；
 - Host-owned revision observation 与原子 batch `memory_update`；
-- loopback RPC 的 `status`、`global/read`、`global/replace`；
+- Connection RPC 的 `status`、`global/read`、`global/replace`；
 - Settings 中的 Status 与 Global 编辑；
 - Host Workspace catalog、`workspaces/list`、`workspace/read` 与只读 Workspaces UI；
 - `workspace/commit`、Browser 批量编辑和保留草稿的 CAS 冲突体验；

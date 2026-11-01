@@ -37,7 +37,6 @@ export interface MemoryHostConnection {
     handle(
       channel: string,
       handler: (endpoint: string, payload: unknown, signal: AbortSignal) => Promise<MemoryRpcResult<unknown>>,
-      options: { authority: 'loopback' },
     ): () => Promise<void>
   }
 }
